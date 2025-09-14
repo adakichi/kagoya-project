@@ -1,0 +1,336 @@
+<!-- EMBED VERSION: paste this whole block into an existing page (no <html> duplication) -->
+<style>
+  /* ===== Scope all styles under #hakone-plan to avoid conflicts ===== */
+  #hakone-plan { --bg:#0b1020; --panel:#111733; --ink:#e7e9f2; --muted:#9aa3b2; --accent:#4f82ff; --accent-2:#7d63ff; --chip:#1b2246; --ok:#67d391; --rail:#2a335e; --rail-2:#3a4381; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; color:var(--ink); }
+  #hakone-plan *{box-sizing:border-box}
+  #hakone-plan a{color:var(--ink); text-decoration:none}
+  #hakone-plan a:hover{opacity:.9}
+  #hakone-plan .wrap{max-width:1100px;margin:40px auto;padding:0 20px}
+  #hakone-plan h1{font-size:28px;margin:0 0 16px;display:flex;gap:12px;align-items:center}
+  #hakone-plan h1 .badge{font-size:12px;background:linear-gradient(45deg,var(--accent),var(--accent-2));padding:4px 10px;border-radius:999px}
+  #hakone-plan .sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+  #hakone-plan .grid{display:grid;gap:16px}
+  @media(min-width:960px){#hakone-plan .grid{grid-template-columns: 380px 1fr}}
+
+  /* ===== Shop cards ===== */
+  #hakone-plan .panel{background:var(--panel);border:1px solid #1a2144;border-radius:16px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  #hakone-plan .panel h2{font-size:18px;margin:0;padding:16px 18px;border-bottom:1px solid #1a2144}
+  #hakone-plan .chips{display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px}
+  #hakone-plan .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;background:var(--chip);border:1px solid #262f62;border-radius:12px}
+  #hakone-plan .chip img{width:36px;height:36px;object-fit:cover;border-radius:8px;border:1px solid #222b59; background:#0c1330}
+  #hakone-plan .chip span{font-size:13px;line-height:1.25}
+
+  /* ===== Schedule / Timeline ===== */
+  #hakone-plan .schedule{padding:16px}
+  #hakone-plan .rail{position:relative;padding:22px 0 8px 0}
+  #hakone-plan .rail::before{content:"";position:absolute;left:24px;top:0;bottom:0;width:3px;background:linear-gradient(var(--rail),var(--rail-2));border-radius:3px}
+  #hakone-plan .entry{position:relative;display:flex;align-items:flex-start;gap:14px;padding:12px 0 12px 0}
+  #hakone-plan .dot{position:absolute;left:14px;top:18px;width:20px;height:20px;border-radius:50%;background:radial-gradient(closest-side,#b9c5ff,#6d7cff);box-shadow:0 0 0 4px rgba(79,130,255,.15)}
+  /* Put the time on the RIGHT of the vertical line to avoid overlap */
+  #hakone-plan .time{margin-left:44px;margin-right:8px;min-width:64px;text-align:left;font-weight:700}
+  #hakone-plan .content{flex:1;padding:8px 12px;background:rgba(255,255,255,.02);border:1px solid #1a2144;border-radius:12px}
+  #hakone-plan .train{display:inline-flex;gap:6px;align-items:center;padding:2px 8px;border-radius:999px;background:#0a1338;border:1px solid #26306a;font-size:12px}
+  #hakone-plan .train svg{width:14px;height:14px}
+  #hakone-plan .hint{color:var(--muted);font-size:12px;margin-top:8px}
+
+  /* ===== CTA ===== */
+  #hakone-plan .cta{margin-top:16px;padding:14px 16px;border-top:1px dashed #222a56;color:var(--muted);font-size:12px}
+
+  /* ===== Map (Hakone-Yumoto area) ===== */
+  #hakone-plan .mapwrap{padding:12px 16px}
+  #hakone-plan .mapframe{width:100%;aspect-ratio:16/10;border:0;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+  #hakone-plan .map-links{display:flex;flex-wrap:wrap;gap:8px;padding:12px 0}
+  #hakone-plan .maplink{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;background:var(--chip);border:1px solid #262f62;border-radius:999px;font-size:12px}
+  #hakone-plan .maplink svg{width:12px;height:12px}
+
+  /* === Responsive (スマホは1カラム＆スケジュール先頭) === */
+  #hakone-plan .grid{grid-template-columns:1fr}
+  @media(min-width:960px){#hakone-plan .grid{grid-template-columns: 380px 1fr}}
+  @media(max-width:959.98px){#hakone-plan .grid > section.panel{order:-1}}
+</style>
+
+<section id="hakone-plan">
+  <div class="wrap">
+    <h1>箱根 旅の計画 <span class="badge">Embed版（<html>を含みません）</span></h1>
+    <div class="sub">タイムラインは縦線の<strong>右側に時刻</strong>が出ます。電車区間は🚆アイコンで分かりやすく表示しています。</div>
+
+    <!-- ==== Map Section (Hakone Yumoto) ==== -->
+    <section class="panel" id="hakone-map">
+      <h2>箱根湯本駅 周辺マップ</h2>
+      <div class="mapwrap">
+        <!-- ▼ あなたの Google マイマップの「地図を埋め込む」URL をここに貼り付けてください（例: https://www.google.com/maps/d/embed?mid=... ） -->
+        <iframe class="mapframe" src="https://www.google.com/maps/d/u/0/embed?mid=1DnONUTxBwhS474PB4Sz2EwPihFUurp4&ehbc=2E312F" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="hint">My Maps: Google マップ → 共有 → <strong>地図を埋め込む</strong> → 表示された URL を上の <code>src</code> に差し替え</div>
+        <div class="map-links">
+          <!-- よく使う地点へのショートカット（Google マップアプリで開く） -->
+          <a class="maplink" target="_blank" href="https://maps.google.com/?q=%E7%AE%B1%E6%A0%B9%E6%B9%AF%E6%9C%AC%E9%A7%85">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+            <span>箱根湯本駅</span>
+          </a>
+          <a class="maplink" target="_blank" href="https://maps.google.com/?q=%E6%B9%AF%E8%91%89%E4%B8%BC+%E7%9B%B4%E5%90%89">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+            <span>湯葉丼 直吉</span>
+          </a>
+          <a class="maplink" target="_blank" href="https://maps.google.com/?q=%E7%94%B0%E3%82%80%E3%82%89+%E9%8A%80%E3%81%8B%E3%81%A4%E4%BA%AD">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+            <span>田むら 銀かつ亭</span>
+          </a>
+          <a class="maplink" target="_blank" href="https://maps.google.com/?q=%E7%9F%A5%E5%AE%A2%E8%8C%B6%E5%AE%B6">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+            <span>知客茶家</span>
+          </a>
+          <a class="maplink" target="_blank" href="https://maps.google.com/?q=%E3%81%A1%E3%82%82%E3%81%A8+%E9%A7%85%E5%89%8D%E9%80%9A%E3%82%8A%E5%BA%97">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+            <span>ちもと 駅前通り店</span>
+          </a>
+          <a class="maplink" target="_blank" href="https://maps.google.com/?q=%E8%8C%B6%E3%81%AE%E3%81%A1%E3%82%82%E3%81%A8">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+            <span>茶のちもと</span>
+          </a>
+          <a class="maplink" target="_blank" href="https://maps.google.com/?q=%E3%81%95%E3%81%8C%E3%81%BF%E3%82%84+%E7%AE%B1%E6%A0%B9">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+            <span>さがみや</span>
+          </a>
+          <a class="maplink" target="_blank" href="https://maps.google.com/?q=%E8%8F%8A%E5%B7%9D%E5%95%86%E5%BA%97+%E7%AE%B1%E6%A0%B9">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+            <span>菊川商店</span>
+          </a>
+          <a class="maplink" target="_blank" href="https://maps.google.com/?q=%E3%83%89%E3%83%AB%E3%83%81%E3%82%A7%E3%82%B9%E3%82%BF%E3%82%B8%E3%82%AA+%E3%82%B9%E3%83%86%E3%83%A9+%E7%AE%B1%E6%A0%B9">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+            <span>ドルチェスタジオ ステラ</span>
+          </a>
+          <a class="maplink" target="_blank" href="https://maps.google.com/?q=%E8%8C%B6%E7%9F%B3+%E5%BC%B7%E7%BE%85">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+            <span>茶石（強羅）</span>
+          </a>
+          <a class="maplink" target="_blank" href="https://maps.google.com/?q=ROHEN+%E7%AE%B1%E6%A0%B9">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+            <span>ROHEN</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <!-- Left: Shops -->
+      <aside class="panel">
+        <h2>お店リスト</h2>
+        <div class="chips">
+          <!-- 和菓子 / 甘味 → ちもと・茶のちもと・菊川商店・さがみや・ステラ・茶石 -->
+          <a class="chip" href="https://tabelog.com/kanagawa/A1410/A141001/14011112/" target="_blank" rel="noopener">
+            <img loading="lazy" src="https://tblg.k-img.com/restaurant/images/Rvw/190786/640x640_rect_2aee4636132500c1ba26e897a4111c7d.jpg" alt="ちもと 駅前通り店 湯もち 画像"/>
+            <span>ちもと 駅前通り店<br><small>和菓子・百名店</small></span>
+          </a>
+          <a class="chip" href="https://tabelog.com/kanagawa/A1410/A141001/14036099/" target="_blank" rel="noopener">
+            <img loading="lazy" src="https://tblg.k-img.com/restaurant/images/Rvw/305930/640x640_rect_75267ceac2c7a10c8de32834e3d7d139.jpg" alt="茶のちもと 画像"/>
+            <span>茶のちもと<br><small>甘味処・百名店</small></span>
+          </a>
+          <a class="chip" href="https://tabelog.com/kanagawa/A1410/A141001/14006390/" target="_blank" rel="noopener">
+            <img loading="lazy" src="https://tblg.k-img.com/restaurant/images/Rvw/174645/640x640_rect_d1f680f2a67f2bfbf6c7f2f5a1d10fe4.jpg" alt="菊川商店 箱根饅頭 画像" onerror="this.style.display='none'"/>
+            <span>菊川商店<br><small>大判焼き・百名店</small></span>
+          </a>
+          <a class="chip" href="https://tabelog.com/kanagawa/A1410/A141001/14031326/" target="_blank" rel="noopener">
+            <img loading="lazy" src="https://tblg.k-img.com/restaurant/images/Rvw/190787/640x640_rect_8fb356493f5880a2111d3c314e8b8b20.jpg" alt="さがみや ナッツヴェッセル 画像"/>
+            <span>さがみや<br><small>洋菓子・百名店</small></span>
+          </a>
+          <a class="chip" href="https://tabelog.com/kanagawa/A1410/A141001/14084076/" target="_blank" rel="noopener">
+            <img loading="lazy" src="https://tblg.k-img.com/restaurant/images/Rvw/312249/640x640_rect_9d3634719363473c6c5c27f094d13d0a.jpg" alt="HAKONE DOLCE STUDIO STELLA 画像"/>
+            <span>ドルチェスタジオ ステラ<br><small>ジェラート</small></span>
+          </a>
+          <a class="chip" href="https://tabelog.com/kanagawa/A1410/A141002/14047674/" target="_blank" rel="noopener">
+            <img loading="lazy" src="https://tblg.k-img.com/restaurant/images/Rvw/114328/640x640_rect_3eaf5dae56a353188e266a3cef39ee5d.jpg" alt="茶石 強羅 画像"/>
+            <span>茶石（さざらし）<br><small>和カフェ</small></span>
+          </a>
+        </div>
+
+        <h2>ごはん</h2>
+        <div class="chips">
+          <a class="chip" href="https://tabelog.com/kanagawa/A1410/A141001/14007213/" target="_blank" rel="noopener">
+            <img loading="lazy" src="https://tblg.k-img.com/restaurant/images/Rvw/255072/640x640_rect_1611b370e3f85675543aa0c7edd17192.jpg" alt="湯葉丼 直吉 画像"/>
+            <span>湯葉丼 直吉</span>
+          </a>
+          <a class="chip" href="https://tabelog.com/kanagawa/A1410/A141001/14001492/" target="_blank" rel="noopener">
+            <img loading="lazy" src="https://tblg.k-img.com/restaurant/images/Rvw/309414/640x640_rect_d1ec58288e0c65e4142b40e47db94af1.jpg" alt="田むら銀かつ亭 画像"/>
+            <span>田むら 銀かつ亭</span>
+          </a>
+          <a class="chip" href="https://tabelog.com/kanagawa/A1410/A141001/14065064/" target="_blank" rel="noopener">
+            <img loading="lazy" src="https://tblg.k-img.com/restaurant/images/Rvw/223724/640x640_rect_70207d331e9548e4be0d5699e49df6d0.jpg" alt="知客茶家 画像"/>
+            <span>知客茶家（しかぢゃや）</span>
+          </a>
+          <a class="chip" href="https://tabelog.com/kanagawa/A1410/A141001/14095333/" target="_blank" rel="noopener">
+            <img loading="lazy" src="https://tblg.k-img.com/restaurant/images/Rvw/306606/640x640_rect_866862a334e2602f9543dac55661052b.jpg" alt="ROHEN 画像"/>
+            <span>ROheN（カフェ&バー）</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- Right: Schedule -->
+      <section class="panel">
+        <h2>スケジュール</h2>
+        <div class="schedule">
+          <div class="rail">
+            <!-- 16日（土） -->
+            <div class="entry">
+              <span class="dot" aria-hidden="true"></span>
+              <div class="time">10:20</div>
+              <div class="content">新宿 発</div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">11:00</div>
+              <div class="content">町田 初（<span class="hint">ここで合流</span>）</div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">12:07</div>
+              <div class="content">箱根湯本 着</div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">12:12</div>
+              <div class="content">箱根湯本発 強羅行き<span class="train">🚆 登山鉄道</span> で強羅移動</div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">12:51</div>
+              <div class="content">強羅 着 → <strong>13:00 田むら銀かつ亭</strong>（昼）</div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">14:10</div>
+              <div class="content">お店を出発</div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">14:28</div>
+              <div class="content">強羅発 早雲山行き（<span class="hint">14:03 / 14:28 / 14:46 など</span>）</div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">14:39</div>
+              <div class="content">早雲山 着 → <strong>CU-MO</strong> で休憩</div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">15:46</div>
+              <div class="content"><span class="train">🚆 強羅 行き</span>（<span class="hint">15:03 / 15:28 / 15:46</span>）
+                <br>
+              </div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">15:53</div>
+              <div class="content"><span class="train">🚆 箱根湯本 行き</span>（<span class="hint">16:08 / :23 / :38 / :53 発</span>）</div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">16:31</div>
+              <div class="content">箱根湯本 着</div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">—</div>
+              <div class="content"><strong>夜：知客茶家（しかぢゃや）</strong></div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">18:36</div>
+              <div class="content">箱根湯本 発 → 新宿行き</div>
+            </div>
+
+            <div class="entry">
+              <span class="dot"></span>
+              <div class="time">20:06</div>
+              <div class="content">新宿 着</div>
+            </div>
+          </div>
+
+          <div class="cta">
+            ※時刻は目安です。最新の運行情報をご確認ください。
+          </div>
+        </div>
+      </section>
+
+      <!--  -->
+      <section class="panel" id="expenses">
+  <h2>実際に使った金額</h2>
+  <div class="money">
+    <!-- この<style>はこのカード内だけに作用（#expenses でスコープ） -->
+           <!-- この<style>はこのカード内だけに作用（#expenses でスコープ） -->
+        <style>
+          /* === Expenses: high-contrast (light cells on dark card) === */
+          #expenses .m-table{width:100%;border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums}
+          #expenses th,#expenses td{padding:12px 14px;border:1px solid #e5e8f0;background:#ffffff;color:#0c1220}
+          /* category header */
+          #expenses .group th{background:#f3f6fb;color:#334155;border-color:#e5e8f0;font-size:12px;text-align:left;padding:10px 12px}
+          /* item & amount cells */
+          #expenses td.item{background:#ffffff}
+          #expenses td.amt{background:#f9fbff;color:#0b1320;min-width:140px;text-align:right;font-weight:700}
+          /* row rounding */
+          #expenses tr.data-row td:first-child{border-radius:10px 0 0 10px}
+          #expenses tr.data-row td:last-child{border-radius:0 10px 10px 0}
+          /* zebra for readability */
+          #expenses tr.data-row:nth-of-type(even) td.item{background:#fcfdff}
+          #expenses tr.data-row:nth-of-type(even) td.amt{background:#f3f7ff}
+          /* footer (total) */
+          #expenses tfoot td{font-weight:800;background:#fff;border-top:2px solid #cfd7e3}
+          /* mobile: stack each row */
+          @media (max-width:640px){
+            #expenses .m-table{border-spacing:0 8px}
+            #expenses tr.data-row td{display:block;width:100%}
+            #expenses tr.data-row td.item{border-bottom:0;border-radius:10px 10px 0 0}
+            #expenses tr.data-row td.amt{border-top:0;border-radius:0 0 10px 10px}
+          }
+        </style>
+
+    <table class="m-table" aria-describedby="m-note">
+      <tbody>
+        <tr class="group"><th colspan="2">交通費</th></tr>
+        <tr class="data-row"><td class="item">小田急（新宿↔箱根湯本・往復）</td><td class="amt">¥0</td></tr>
+        <tr class="data-row"><td class="item">登山電車（箱根湯本↔強羅・往復）</td><td class="amt">¥0</td></tr>
+        <tr class="data-row"><td class="item">ケーブル／ロープウェイ（強羅↔早雲山・往復）</td><td class="amt">¥0</td></tr>
+        <tr class="data-row"><td class="item">バス（元箱根港 行き）</td><td class="amt">¥0</td></tr>
+
+        <tr class="group"><th colspan="2">飲食</th></tr>
+        <tr class="data-row"><td class="item">昼：田むら銀かつ亭(豆腐カツ煮x2)</td><td class="amt">¥3586</td></tr>
+        <tr class="data-row"><td class="item">カフェ・甘味（ちもと／茶のちもと／ステラ 等）</td><td class="amt">¥0</td></tr>
+        <tr class="data-row"><td class="item">COFFEE CAMP(コールドブリュー/レモネードソーダ)</td><td class="amt">¥1320</td></tr>
+        <tr class="data-row"><td class="item">夜：知客茶家</td><td class="amt">¥0</td></tr>
+
+        <tr class="group"><th colspan="2">立寄り・体験</th></tr>
+        <tr class="data-row"><td class="item">cu-mo箱根（足湯）</td><td class="amt">¥0</td></tr>
+
+        <tr class="group"><th colspan="2">お土産</th></tr>
+        <tr class="data-row"><td class="item">湯もち（ちもと）</td><td class="amt">¥0</td></tr>
+        <tr class="data-row"><td class="item">大涌谷うずらの黒たまご  </td><td class="amt">¥960</td></tr>
+        <tr class="data-row"><td class="item">箱根饅頭（菊川商店）10個入り</td><td class="amt">¥800</td></tr>
+
+        <tr class="group"><th colspan="2">その他</th></tr>
+        <tr class="data-row"><td class="item">飲み物・雑費</td><td class="amt">¥0</td></tr>
+        <tr class="data-row"><td class="item">予備（不足分など）</td><td class="amt">¥0</td></tr>
+      </tbody>
+      <tfoot>
+        <tr><td class="item">合計</td><td class="amt">¥0</td></tr>
+      </tfoot>
+    </table>
+
+    <div class="m-note" id="m-note">※ 金額はこのHTML内の数値を直接書き換えてご利用ください。</div>
+  </div>
+</section>
+
+
+    </div>
+  </div>
+</section>

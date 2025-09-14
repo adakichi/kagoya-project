@@ -1,0 +1,108 @@
+const express = require('express');
+const router = express.Router();
+const denkiPool = require('../../utils/denki-db');
+
+// GET /api/denki/questions
+router.get('/questions', async (req, res) => {
+  const category = req.query.category;
+  const limit = parseInt(req.query.limit) || 5;
+
+  const conn = await denkiPool.getConnection();
+  try {
+    let sql = `
+      SELECT q.id, q.question, q.answer_index, q.explanation, q.category, q.image_url,
+             c.choice_index, c.choice_text
+      FROM questions q
+      JOIN question_choices c ON q.id = c.question_id
+    `;
+    const params = [];
+
+    if (category) {
+      sql += ` WHERE q.category = ?`;
+      params.push(category);
+    }
+
+    sql += ` ORDER BY RAND() LIMIT ?`;
+    params.push(limit);
+
+    const [rows] = await conn.query(sql, params);
+
+    // question_id ごとにまとめる
+    const grouped = {};
+    for (const row of rows) {
+      if (!grouped[row.id]) {
+        grouped[row.id] = {
+          id: row.id,
+          question: row.question,
+          category: row.category,
+          image_url: row.image_url,
+          explanation: row.explanation,
+          answer_index: row.answer_index,
+          choices: []
+        };
+      }
+      grouped[row.id].choices.push({
+        index: row.choice_index,
+        text: row.choice_text
+      });
+    }
+
+    res.json(Object.values(grouped));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    conn.release();
+  }
+});
+
+
+// POST /api/denki/answers
+router.post('/answers', async (req, res) => {
+  const { user_id, question_id, choice_index } = req.body;
+
+  if (!user_id || !question_id || choice_index === undefined) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const conn = await denkiPool.getConnection();
+  try {
+    // 正解取得
+    const [rows] = await conn.query(
+      'SELECT answer_index, explanation FROM questions WHERE id = ?',
+      [question_id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Question not found' });
+    }
+
+    const { answer_index, explanation } = rows[0];
+    const isCorrect = (choice_index === answer_index);
+
+    // 解答ログに記録
+    await conn.query(
+      'INSERT INTO user_answers (user_id, question_id, choice_index, is_correct) VALUES (?, ?, ?, ?)',
+      [user_id, question_id, choice_index, isCorrect]
+    );
+
+    // 進捗を更新（UPSERT）
+    await conn.query(`
+      INSERT INTO user_progress (user_id, question_id, is_correct)
+      VALUES (?, ?, ?)
+      ON DUPLICATE KEY UPDATE is_correct = VALUES(is_correct), updated_at = CURRENT_TIMESTAMP
+    `, [user_id, question_id, isCorrect]);
+
+    res.json({
+      correct: isCorrect,
+      explanation
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    conn.release();
+  }
+});
+
+module.exports = router;

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title || 'Fail2Ban Viewer' %></title>
+  <link rel="stylesheet" href="/css/base.css">
+  <!-- PWA関連 -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icons/icon-192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="theme-color" content="#317EFB">
+
+  <% const themeFile = theme === 'dark' ? 'dark.css' : 'light.css'; %>
+  <link rel="stylesheet" href="/css/<%= themeFile %>">
+</head>
+<body>
+  <header>
+    <h1>Fail2Ban ログビューア</h1>
+    <nav>
+      <a href="/">🏠 トップ</a>
+      <a href="/log?theme=<%= theme %>">🗂 IP単位</a>
+      <a href="/log/country?theme=<%= theme %>">🌍 国別集計</a>
+      <a href="/ban?theme=<%= theme %>">🚫 永久BAN一覧</a>
+      <a href="/ban/nginx?theme=<%= theme %>">🌐 nginx BAN一覧</a>
+      <a href="<%= toggleThemeUrl %>">
+        <%= theme === 'light' ? '🌙 ダークモード' : '🌞 ライトモード' %>
+      </a>
+    </nav>
+  </header>
+
+  <main>
+    <%- body %> <!-- 各テンプレートがここに差し込まれる -->
+  </main>
+
+  <footer>
+    <p>&copy; 2025 sugihara</p>
+  </footer>
+
+  <!--  -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => {
+            console.log('✅ Service Worker registered:', reg);
+          })
+          .catch(err => {
+            console.error('❌ Service Worker registration failed:', err);
+          });
+      });
+    }
+  </script>
+
+  <!-- 購読処理JS -->
+  <script>
+    const publicVapidKey = "<%= process.env.VAPID_PUBLIC_KEY %>"; // EJSで注入も可
+
+    async function subscribeToPush() {
+      const registration = await navigator.serviceWorker.ready;
+
+      try {
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+        });
+
+        await fetch('/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(subscription)
+        });
+
+        console.log('📬 Push購読完了！');
+      } catch (err) {
+        console.error('🚫 Push購読失敗:', err);
+      }
+    }
+
+    // helper: base64文字列→Uint8Arrayに変換
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding)
+        .replace(/\-/g, '+').replace(/_/g, '/');
+      const rawData = atob(base64);
+      return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+    }
+
+    // ページ読み込み時に購読実行
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      subscribeToPush();
+    }
+    // 「通知が拒否」の設定になっている
+    if (Notification.permission === 'denied') {
+      alert('通知がブロックされています。ブラウザの設定から許可してください。');
+    }
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<h2>現在BAN中のIP一覧</h2>
+
+<% if (bans.length === 0) { %>
+  <p>現在、BAN中のIPはありません。</p>
+<% } else { %>
+  <div class="table-container">
+    <table>
+      <tr>
+        <th>IPアドレス</th>
+        <th>国</th>
+        <% if (bans[0].jail) { %><th>Jail名</th><% } %>
+      </tr>
+      <% bans.forEach(b => { %>
+      <tr>
+        <td><%= b.ip %></td>
+        <td><%= b.country %></td>
+        <% if (b.jail) { %><td><%= b.jail %></td><% } %>
+      </tr>
+      <% }) %>
+    </table>
+  </div>
+<% } %>

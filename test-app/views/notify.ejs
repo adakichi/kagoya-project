@@ -1,0 +1,42 @@
+<h2>Push通知送信フォーム</h2>
+<form id="pushForm">
+  <label>タイトル: <input type="text" name="title" required></label><br>
+  <label>本文: <input type="text" name="body" required></label><br>
+  <button type="submit">送信</button>
+</form>
+
+<div id="result"></div>
+
+<script>
+  // 送信結果を少しととのえる
+  function formatResult(result) {
+    if (!result || !result.results) return '結果なし';
+    console.log(result.join('<br><hr>'))
+    return result.results.map((r, i) => {
+      let lines = [`<strong>通知${i + 1}</strong><br>`];
+      if (r.status === 'fulfilled') {
+        lines.push('ステータス: OK<br>');
+        lines.push(`HTTP: ${r.value.statusCode}<br>`);
+      } else {
+        lines.push('ステータス: エラー<br>');
+        lines.push(`理由: ${r.reason}<br>`);
+      }
+      return lines.join('');
+    }).join('<hr>');
+  }
+
+document.getElementById('pushForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  const res = await fetch('/send-push', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: form.title.value,
+      body: form.body.value
+    })
+  });
+  const result = await res.json();
+  document.getElementById('result').innerHTML = formatResult(result);
+});
+</script>

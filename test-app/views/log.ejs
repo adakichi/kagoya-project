@@ -1,0 +1,52 @@
+  <h2>Fail2Ban ログ一覧</h2>
+
+  <p>
+    <a href="/log">▶ IP単位で表示</a> |
+    <a href="/log/country">🌍 国別で集計表示</a>
+  </p>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <% if (logs.length === 0) { %>
+          <tr><th>情報なし</th></tr>
+        <% } else if (logs[0].ip) { %>
+          <!-- IP単位表示 -->
+          <tr>
+            <th>日付</th>
+            <th>回数</th>
+            <th>IPアドレス</th>
+            <th>国</th>
+          </tr>
+        <% } else { %>
+          <!-- 国別表示 -->
+          <tr>
+            <th>国</th>
+            <th>回数</th>
+          </tr>
+        <% } %>
+      </thead>
+
+      <tbody>
+        <% if (logs.length === 0) { %>
+          <tr><td>該当するログはありません。</td></tr>
+        <% } else { %>
+          <% logs.forEach(log => { %>
+            <tr>
+              <% if (log.ip) { %>
+                <!-- IP単位 -->
+                <td><%= log.date %></td>
+                <td><%= log.count %></td>
+                <td><%= log.ip %></td>
+                <td><%= log.country %></td>
+              <% } else { %>
+                <!-- 国別 -->
+                <td><%= log.country %></td>
+                <td><%= log.count %></td>
+              <% } %>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>

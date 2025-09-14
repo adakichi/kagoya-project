@@ -1,0 +1,53 @@
+  <h1>📩 プッシュ通知送信</h1>
+  <form id="pushForm">
+    <label for="title">タイトル:</label>
+    <input type="text" id="title" name="title" required>
+
+    <label for="body">本文:</label>
+    <textarea id="body" name="body" rows="4" required></textarea>
+
+    <button type="submit">通知を送信</button>
+  </form>
+
+  <pre id="responseArea"></pre>
+
+  <script>
+    document.getElementById('pushForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById('title').value;
+      const body = document.getElementById('body').value;
+
+      const res = await fetch('/send-push', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title, body })
+      });
+
+      const json = await res.json();
+      document.getElementById('responseArea').textContent = JSON.stringify(json, null, 2);
+    });
+  </script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+    }
+    form {
+      max-width: 500px;
+      margin: auto;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+    }
+  </style>

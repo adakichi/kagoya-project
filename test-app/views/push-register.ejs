@@ -1,0 +1,75 @@
+  <h2>支払通知の登録</h2>
+
+  <div id="step1">
+    <label>顧客IDを入力してください：</label><br>
+    <input type="text" id="userIdInput" placeholder="例: 12345678">
+    <button id="verifyBtn">確認</button>
+    <p id="verifyResult"></p>
+  </div>
+
+  <div id="step2" style="display:none;">
+    <p>📬 この端末に通知を送ってもよろしいですか？</p>
+    <button id="subscribeBtn">通知を許可して登録</button>
+    <p id="subscribeResult"></p>
+  </div>
+
+  <script>
+    let userId = '';
+
+    document.getElementById('verifyBtn').addEventListener('click', async () => {
+      userId = document.getElementById('userIdInput').value.trim();
+      if (!userId) {
+        alert('顧客IDを入力してください');
+        return;
+      }
+
+      // モック認証（12345678のみOK）
+      const isValid = await mockVerifyUserId(userId);
+      const resultEl = document.getElementById('verifyResult');
+
+      if (isValid) {
+        resultEl.textContent = `✔️ 顧客ID「${userId}」は確認されました`;
+        document.getElementById('step2').style.display = 'block';
+      } else {
+        resultEl.textContent = '❌ 顧客IDが見つかりません';
+      }
+    });
+
+    document.getElementById('subscribeBtn').addEventListener('click', async () => {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        alert('通知が許可されませんでした');
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.register('/service-worker.js');
+
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array('【VAPIDの公開鍵】')
+      });
+
+      await mockSendSubscription(userId, subscription);
+
+      document.getElementById('subscribeResult').textContent = '🎉 通知の登録が完了しました！';
+    });
+
+    async function mockVerifyUserId(id) {
+      return id === '12345678'; // モック認証
+    }
+
+    async function mockSendSubscription(userId, subscription) {
+      console.log('送信データ（モック）:', {
+        userId,
+        subscription
+      });
+    }
+
+    function urlBase64ToUint8Array(base64String) {
+      if (!base64String) return new Uint8Array();
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = window.atob(base64);
+      return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+    }
+  </script>
