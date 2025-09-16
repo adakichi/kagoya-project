@@ -3,6 +3,7 @@
     <v-app-bar app color="primary" dark>
       <v-toolbar-title>電気工事士クイズ</v-toolbar-title>
     </v-app-bar>
+    <v-btn @click="getQuestion">テスト</v-btn>
 
     <v-main>
       <v-container class="py-10">
@@ -96,18 +97,26 @@ const explanation = ref('')
 // 現在の問題
 const currentQuestion = computed(() => questions.value[currentIndex.value])
 
+const config = useRuntimeConfig()
+
 // 初期ロードで問題取得
 onMounted(async () => {
-  const res = await $fetch<Question[]>('/api/questions?limit=5')
+  const res = await $fetch<Question[]>(`${config.public.apiBase}/questions?limit=5`)
   questions.value = res
 })
+
+async function getQuestion(){
+    const res = await $fetch<Question[]>(`${config.public.apiBase}/questions?limit=5`)
+    console.log('res')
+    console.log(res)
+}
 
 // 回答処理
 async function selectAnswer(choiceIndex: number) {
   if (!currentQuestion.value) return
 
   const res = await $fetch<{ correct: boolean; explanation: string }>(
-    '/api/answers',
+    `${config.public.apiBase}/answers`,
     {
       method: 'POST',
       body: {

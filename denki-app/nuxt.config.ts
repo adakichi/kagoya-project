@@ -12,7 +12,8 @@ export default defineNuxtConfig({
   },
   // アプリケーションの基本URLを設定
   app: {
-    baseURL: '/denki/'
+    baseURL: '/denki/',
+    buildAssetsDir: '/_nuxt/'
   },
 
   // Vuetifyモジュールを有効化
@@ -37,7 +38,7 @@ export default defineNuxtConfig({
     public: {
       apiBase: '/api/denki'
     }
-  }
+  },
 
   // 👇 フロント専用にする設定を追加
   ssr: false,
