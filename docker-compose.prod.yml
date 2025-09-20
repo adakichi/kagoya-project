@@ -16,22 +16,13 @@ services:
     depends_on:
       - db
 
-  frontend:
+  frontend-build:
     build:
       context: ./denki-app
       dockerfile: Dockerfile.prod
-    working_dir: /usr/src/app
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - NUXT_HOST=0.0.0.0
-      - NUXT_PORT=3000
-      - NUXT_PUBLIC_API_BASE=https://o-ishisugihara.com/api/denki
-    depends_on:
-      - test-app
-    restart: always
-
+    volumes:
+      - ./denki-dist:/dist   # ホストに成果物を保存
+      
   db:
     image: mysql:8.0
     environment:
