@@ -47,7 +47,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE || 'http://localhost:8081/api/denki'
-    }
+   }
   },
 
   // 👇 フロント専用にする設定を追加
