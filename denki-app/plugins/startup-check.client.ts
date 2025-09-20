@@ -2,6 +2,7 @@
 import { useCategoryStore } from '~/stores/categoryStore'
 
 export default defineNuxtPlugin(async () => {
+  console.log(">>> startup-check.plugin loaded")
   if (!process.client) return
   const config = useRuntimeConfig()
   const categoryStore = useCategoryStore()
