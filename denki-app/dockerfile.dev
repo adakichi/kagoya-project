@@ -5,6 +5,8 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
 
-COPY . .
+# ソースコードをマウントするため COPY は不要
+
+EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
