@@ -1,142 +1,224 @@
 <template>
-  <v-app>
-    <v-app-bar app color="primary" dark>
-      <v-toolbar-title>電気工事士クイズ</v-toolbar-title>
-    </v-app-bar>
-    <v-btn @click="getQuestion">テスト</v-btn>
+  <v-container class="py-8" v-if="currentQuestion">
+    <!-- 問題番号 -->
+    <div class="mb-4">
+      <h2 class="text-h6">
+        {{ currentIndex + 1 }} / {{ questions.length }} 問
+      </h2>
+    </div>
 
-    <v-main>
-      <v-container class="py-10">
-        <h1 class="text-h5 mb-6">
-          問題 {{ currentIndex + 1 }} / {{ questions.length }}
-        </h1>
+    <!-- 問題文 -->
+    <div class="mb-4">
+      <p class="text-subtitle-1 font-weight-medium">
+        {{ currentQuestion.question }}
+      </p>
+      <v-img
+        v-if="currentQuestion.image_url"
+        :src="currentQuestion.image_url"
+        class="my-4"
+        max-width="400"
+      />
+    </div>
 
-        <!-- 問題文 -->
-        <p v-if="currentQuestion" class="text-h6 mb-6">
-          {{ currentQuestion.question }}
-        </p>
+    <div>currentquestion:{{ currentQuestion }}</div>
+    <!-- 選択肢 -->
+    <div class="mb-6">
+      <v-btn
+        v-for="choice in currentQuestion.choices"
+        :key="choice.index"
+        block
+        class="mb-2"
+        :color="answered ? getChoiceColor(choice.index) : ''"
+        :disabled="answered"
+        @click="selectAnswer(choice.index)"
+      >
+        {{ choice.text }}
+      </v-btn>
+    </div>
 
-        <!-- 画像がある場合 -->
-        <div v-if="currentQuestion?.image_url" class="mb-6">
-          <v-img :src="currentQuestion.image_url" max-width="400" class="mx-auto" />
-        </div>
+    <!-- 解説 -->
+    <v-alert
+      v-if="showExplanation"
+      type="info"
+      border="start"
+      class="mb-6"
+    >
+      {{ explanation }}
+    </v-alert>
 
-        <!-- 選択肢 -->
-        <v-row v-if="currentQuestion">
-          <v-col
-            cols="12"
-            md="6"
-            v-for="choice in currentQuestion.choices"
-            :key="choice.index"
-          >
-            <v-btn
-              block
-              color="secondary"
-              variant="outlined"
-              @click="selectAnswer(choice.index)"
-            >
-              {{ choice.text }}
-            </v-btn>
-          </v-col>
-        </v-row>
+    <!-- 次へボタン -->
+    <v-btn
+      v-if="answered && currentIndex < questions.length - 1"
+      color="primary"
+      @click="nextQuestion"
+    >
+      次の問題へ
+    </v-btn>
 
-        <!-- 解説表示 -->
-        <v-alert
-          v-if="showExplanation"
-          :type="isCorrect ? 'success' : 'error'"
-          class="mt-6"
-        >
-          <div>
-            <p>{{ isCorrect ? '正解！' : '不正解…' }}</p>
-            <p>{{ explanation }}</p>
-          </div>
-        </v-alert>
+    <!-- 結果へボタン -->
+    <v-btn
+      v-if="answered && currentIndex === questions.length - 1"
+      color="success"
+      @click="goToResult"
+    >
+      結果を見る
+    </v-btn>
+  </v-container>
 
-        <!-- 次へボタン -->
-        <div class="mt-8 text-center" v-if="showExplanation">
-          <v-btn
-            color="primary"
-            @click="nextQuestion"
-            v-if="currentIndex < questions.length - 1"
-          >
-            次の問題へ
-          </v-btn>
-          <v-btn color="success" v-else>
-            結果を見る
-          </v-btn>
-        </div>
-      </v-container>
-    </v-main>
-  </v-app>
+  <v-container v-else class="py-8 text-center">
+    <p>問題を読み込んでいます...</p>
+  </v-container>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
-interface Choice {
-  index: number
-  text: string
-}
+const route = useRoute()
+const router = useRouter()
 
-interface Question {
-  id: number
-  question: string
-  choices: Choice[]
-  explanation: string
-  answer_index: number
-  category: string
-  image_url?: string
-}
-
-const questions = ref<Question[]>([])
+const questions = ref<any[]>([])
 const currentIndex = ref(0)
-const showExplanation = ref(false)
-const isCorrect = ref(false)
+const answered = ref(false)
+const isCorrect = ref<boolean | null>(null)
 const explanation = ref('')
+const showExplanation = ref(false)
 
-// 現在の問題
 const currentQuestion = computed(() => questions.value[currentIndex.value])
 
-const config = useRuntimeConfig()
-
-// 初期ロードで問題取得
 onMounted(async () => {
-  const res = await $fetch<Question[]>(`${config.public.apiBase}/questions?limit=5`)
-  questions.value = res
+  const category = route.query.category as string
+  const limit = Number(route.query.limit) || 5
+  console.log(`カテゴリ:${category} 問題数:${limit}`)
+  // IndexedDB からカテゴリの問題を取得
+  const allQuestions = await getQuestionsFromDB(category)
+  console.log(`全問題取得`,allQuestions)
+  // limit件ランダムに選ぶ
+  questions.value = shuffle(allQuestions).slice(0, limit)
+  console.log(`シャッフル：`,questions)
+
 })
 
-async function getQuestion(){
-    const res = await $fetch<Question[]>(`${config.public.apiBase}/questions?limit=5`)
-    console.log('res')
-    console.log(res)
+/** IndexedDBからカテゴリの問題と選択肢を取得 */
+function getQuestionsFromDB(category: string): Promise<any[]> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open("DenkiQuizDB", 1)
+
+    request.onsuccess = () => {
+      const db = request.result
+
+      // まず questions をカテゴリで取得
+      const txQ = db.transaction("questions", "readonly")
+      const storeQ = txQ.objectStore("questions")
+      const index = storeQ.index("by_category")
+      const getReq = index.getAll(category)
+
+      getReq.onsuccess = () => {
+        console.log(`処理始めます`)
+        const questions = getReq.result
+        if (!questions.length) return resolve([])
+
+        // 選択肢も取得
+        const txC = db.transaction("question_choices", "readonly")
+        const storeC = txC.objectStore("question_choices")
+
+        const results: any[] = []
+        let pending = questions.length
+
+        questions.forEach(q => {
+        console.log(`ｑ：`,q)
+          const choiceIndex = storeC.index("by_question_id")
+          const choiceReq = choiceIndex.getAll(q.id)
+          console.log(`choiceReq：`,choiceReq)
+
+          choiceReq.onsuccess = () => {
+            results.push({
+              ...q,
+              choices: choiceReq.result.map((c: any) => ({
+                index: c.choice_index,
+                text: c.choice_text
+              }))
+            })
+
+            pending--
+            if (pending === 0) resolve(results)
+          }
+
+          choiceReq.onerror = () => {
+            pending--
+            if (pending === 0) resolve(results)
+          }
+        })
+      }
+
+      getReq.onerror = (err) => reject(err)
+    }
+
+    request.onerror = (err) => reject(err)
+  })
 }
 
-// 回答処理
-async function selectAnswer(choiceIndex: number) {
+/** 配列をランダムシャッフル */
+function shuffle(array: any[]): any[] {
+  return array
+    .map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+}
+
+function selectAnswer(choiceIndex: number) {
   if (!currentQuestion.value) return
 
-  const res = await $fetch<{ correct: boolean; explanation: string }>(
-    `${config.public.apiBase}/answers`,
-    {
-      method: 'POST',
-      body: {
-        user_id: 1, // TODO: 本当はログインユーザーから取得
-        question_id: currentQuestion.value.id,
-        choice_index: choiceIndex
-      }
-    }
-  )
+  // ★ ユーザーの解答を記録
+  currentQuestion.value.userAnswer = choiceIndex
 
-  isCorrect.value = res.correct
-  explanation.value = res.explanation
+  // 判定
+  answered.value = true
+  isCorrect.value = choiceIndex === currentQuestion.value.answer_index
+  explanation.value = currentQuestion.value.explanation
   showExplanation.value = true
 }
 
-function nextQuestion() {
-  if (currentIndex.value < questions.value.length - 1) {
-    currentIndex.value++
-    showExplanation.value = false
-    explanation.value = ''
-  }
+
+function getChoiceColor(choiceIndex: number) {
+  if (choiceIndex === currentQuestion.value.answer_index) return 'green'
+  if (choiceIndex === isCorrect.value && !isCorrect.value) return 'red'
+  return ''
 }
+
+function nextQuestion() {
+  currentIndex.value++
+  answered.value = false
+  explanation.value = ''
+  showExplanation.value = false
+}
+
+function goToResult() {
+  console.log(`go To resule`,questions.value)
+  // 正誤データをまとめる
+  
+  const result = questions.value.map((q) => ({
+    id: q.id,
+    question: q.question,
+    userAnswer: q.userAnswer ?? null,
+    isCorrect: q.userAnswer === q.answer_index,
+    userAnswerText: q.choices.find((c:any) => Number(c.index) === Number(q.userAnswer))?.text || '未回答',
+    correctAnswerText: q.choices.find((c:any) => Number(c.index) === Number(q.answer_index))?.text || '不明'
+  }))
+
+  // 保存して遷移
+  console.log("保存前 result:", result)
+  sessionStorage.setItem("quiz_result", JSON.stringify(result))
+  console.log("保存後:", sessionStorage.getItem("quiz_result"))
+
+  // 遷移
+  router.push({
+    path: '/result',
+    query: {
+      total: questions.value.length,
+      correct: result.filter(r => r.isCorrect).length
+    }
+  })
+}
+
+
 </script>

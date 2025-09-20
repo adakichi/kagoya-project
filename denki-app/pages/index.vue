@@ -1,15 +1,36 @@
 <template>
-      <v-container class="py-10 text-center">
-        <h1 class="text-h4 mb-6">ようこそ！電気工事士クイズサイトへ</h1>
-        <p class="mb-10">知識を試して、楽しく学びましょう！</p>
+  <v-container class="d-flex flex-column align-center justify-center" style="height: 100vh;">
+    <h1 class="text-h4 mb-6">電気工事士クイズアプリ</h1>
 
-        <div>
-          <v-btn color="primary" size="x-large" class="mr-4" to="/quiz">
-            クイズを始める
-          </v-btn>
-          <v-btn color="secondary" size="x-large" variant="outlined">
-            ランキングを見る
-          </v-btn>
-        </div>
-      </v-container>
+    <v-btn 
+      color="primary" 
+      class="mb-4"
+      @click="goToSetup"
+    >
+      クイズを始める
+    </v-btn>
+
+    <!-- 今後の拡張: 他のメニューを追加する余地 -->
+    <v-btn 
+      variant="outlined"
+      @click="goToStats"
+    >
+      学習の進捗を見る
+    </v-btn>
+  </v-container>
 </template>
+
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function goToSetup() {
+  router.push('quiz-setup')
+}
+
+function goToStats() {
+  // 将来的に /denki/stats ページを作る想定
+  router.push('stats')
+}
+</script>

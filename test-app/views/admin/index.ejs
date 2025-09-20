@@ -1,0 +1,16 @@
+<h2>管理画面Death</h2>
+<p>
+    といっても、特に今はやること無し。
+</p>
+  <h2>メニュー</h2>
+<nav style="background:#333; padding:10px;">
+  <ul style="list-style:none; margin:0; padding:0; display:flex; gap:20px;">
+    <% menus.forEach(menu => { %>
+      <li>
+        <a href="<%= baseUrl %>/<%= menu.path %>" style="color:white; text-decoration:none;">
+          <%= menu.name %>
+        </a>
+      </li>
+    <% }) %>
+  </ul>
+</nav>

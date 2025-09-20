@@ -28,7 +28,7 @@
 document.getElementById('pushForm').addEventListener('submit', async e => {
   e.preventDefault();
   const form = e.target;
-  const res = await fetch('/send-push', {
+  const res = await fetch('notify/send-push', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

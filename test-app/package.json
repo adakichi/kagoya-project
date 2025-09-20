@@ -3,16 +3,20 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node app.js",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
+  "type":"module",
   "dependencies": {
     "@line/bot-sdk": "^9.9.0",
     "axios": "^1.9.0",
     "basic-auth": "^2.0.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",

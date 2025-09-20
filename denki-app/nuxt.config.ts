@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
     devServer: {
-    port: 3001
+    port: 3000
   },
   build: {
     transpile: ['vuetify'],
@@ -16,27 +16,37 @@ export default defineNuxtConfig({
     buildAssetsDir: '/_nuxt/'
   },
 
+  css: [
+    'vuetify/styles',
+    '@mdi/font/css/materialdesignicons.css' // ★ これを追加
+  ],
+  
   // Vuetifyモジュールを有効化
   modules: [
+    ['@pinia/nuxt']
   ],
 
   // Viteサーバーの設定
   vite: {
         ssr: {
-      noExternal: ['vuetify'],
-    },
-    plugins: [
-      vuetify({ autoImport: true }), // 👈 Vuetify を Vite 経由で有効化
-    ],
-    server: {
-      allowedHosts: ['o-ishisugihara.com']
-    }
+          noExternal: ['vuetify'],
+        },
+        plugins: [
+          vuetify({ autoImport: true }), // 👈 Vuetify を Vite 経由で有効化
+        ],
+        server: {
+          allowedHosts: ['o-ishisugihara.com']
+        },
+        watch: {
+          usePolling: true,
+          interval: 100
+        }
   },
 
   // apiのBaseURLを設定
     runtimeConfig: {
     public: {
-      apiBase: '/api/denki'
+      apiBase: 'http://localhost:8081/api/denki'
     }
   },
 

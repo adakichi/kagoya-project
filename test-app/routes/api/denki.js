@@ -1,31 +1,47 @@
-const express = require('express');
-const router = express.Router();
-const denkiPool = require('../../utils/denki-db');
+import express from 'express'
+import denkiPool from '../../utils/denki-db.js'
+
+const router = express.Router()
 
 // GET /api/denki/questions
 router.get('/questions', async (req, res) => {
+  console.log(`URI:questions 取得処理開始します`)
   const category = req.query.category;
   const limit = parseInt(req.query.limit) || 5;
 
   const conn = await denkiPool.getConnection();
   try {
+    // カテゴリの最新versionを取得
+    let version = null;
+    if (category) {
+      const [verRows] = await conn.query(
+        'SELECT version FROM category_versions WHERE category = ?',
+        [category]
+      );
+      version = verRows.length > 0 ? verRows[0].version : new Date().toISOString();
+    }
+
+    // 問題取得
     let sql = `
       SELECT q.id, q.question, q.answer_index, q.explanation, q.category, q.image_url,
              c.choice_index, c.choice_text
-      FROM questions q
+      FROM (
+        SELECT * FROM questions
+        ${category ? 'WHERE category = ?' : ''}
+        ORDER BY RAND()
+        LIMIT ?
+      ) q
       JOIN question_choices c ON q.id = c.question_id
+      ORDER BY q.id, c.choice_index
     `;
+
     const params = [];
-
-    if (category) {
-      sql += ` WHERE q.category = ?`;
-      params.push(category);
-    }
-
-    sql += ` ORDER BY RAND() LIMIT ?`;
+    if (category) params.push(category);
     params.push(limit);
 
     const [rows] = await conn.query(sql, params);
+
+    console.log(`${rows.length}件取得`)
 
     // question_id ごとにまとめる
     const grouped = {};
@@ -47,7 +63,12 @@ router.get('/questions', async (req, res) => {
       });
     }
 
-    res.json(Object.values(grouped));
+    res.json({
+      category: category || null,
+      version,
+      questions: Object.values(grouped)
+    });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -55,7 +76,6 @@ router.get('/questions', async (req, res) => {
     conn.release();
   }
 });
-
 
 // POST /api/denki/answers
 router.post('/answers', async (req, res) => {
@@ -105,4 +125,24 @@ router.post('/answers', async (req, res) => {
   }
 });
 
-module.exports = router;
+// GET /api/denki/categories
+router.get('/categories', async (req, res) => {
+  console.log(`URI:categories 取得処理開始します`);
+
+  const conn = await denkiPool.getConnection();
+  try {
+    const [rows] = await conn.query(
+      'SELECT category, title, version, updated_at FROM category_versions ORDER BY category'
+    );
+
+    rows.forEach(ele => console.log(ele))
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    conn.release();
+  }
+});
+
+export default router;
