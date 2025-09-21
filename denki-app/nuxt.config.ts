@@ -53,7 +53,10 @@ export default defineNuxtConfig({
   // 👇 フロント専用にする設定を追加
   ssr: false,
   nitro: {
-    preset: 'static'
+    preset: 'static',
+    output: { 
+      publicDir: 'gen-dist'
+    }
   }
 
 })
