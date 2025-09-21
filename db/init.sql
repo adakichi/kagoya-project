@@ -23,6 +23,18 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ==============================
+-- 1-1. category_versions
+-- ==============================
+
+CREATE TABLE `category_versions` (
+	`category` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`title` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`version` VARCHAR(20) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`category`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ==============================
 -- 2. questions (親)
 -- ==============================
 DROP TABLE IF EXISTS `questions`;
@@ -37,10 +49,6 @@ CREATE TABLE `questions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 初期データ
-INSERT INTO `questions` VALUES
-(1,'抵抗10Ωに20Vを加えたとき、流れる電流[A]は？',2,
- 'オームの法則 I = V ÷ R を用いる。20 ÷ 10 = 2A となる。','電気の基礎',NULL,'2025-09-14 06:02:42');
 
 -- ==============================
 -- 3. question_choices (questions に依存)
@@ -56,12 +64,6 @@ CREATE TABLE `question_choices` (
   CONSTRAINT `question_choices_ibfk_1`
     FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `question_choices` VALUES
-(1,1,0,'0.5A'),
-(2,1,1,'1.0A'),
-(3,1,2,'2.0A'),
-(4,1,3,'5.0A');
 
 -- ==============================
 -- 4. user_answers (users, questions に依存)
