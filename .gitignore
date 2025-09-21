@@ -22,3 +22,6 @@ logs
 .env
 .env.*
 !.env.example
+
+# denki-appのgenerate結果は除く
+denki-dist/

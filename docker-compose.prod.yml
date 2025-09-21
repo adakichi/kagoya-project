@@ -16,32 +16,14 @@ services:
     depends_on:
       - db
 
-<<<<<<< HEAD
   frontend-build:
     build:
       context: ./denki-app
       dockerfile: Dockerfile.prod
+    command: npm run generate
     volumes:
-      - ./denki-dist:/dist   # ホストに成果物を保存
-      
-=======
-  frontend:
-    build:
-      context: ./denki-app
-      dockerfile: Dockerfile.prod
-    working_dir: /usr/src/app
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - NUXT_HOST=0.0.0.0
-      - NUXT_PORT=3000
-      - NUXT_PUBLIC_API_BASE=https://o-ishisugihara.com/api/denki
-    depends_on:
-      - test-app
-    restart: always
-
->>>>>>> 243eb4f (dockerfileを本番用（build&start)に作成)
+      - ./denki-dist:/usr/src/app/.output/public 
+            
   db:
     image: mysql:8.0
     environment:
