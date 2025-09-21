@@ -20,9 +20,13 @@ services:
     build:
       context: ./denki-app
       dockerfile: Dockerfile.prod
-    command: npm run generate
+    command: >
+      sh -c "npm run generate && cp -r gen-dist/* export/"
+    environment:
+      - NODE_ENV=production
+      - API_BASE=/api/denki
     volumes:
-      - ./denki-dist:/usr/src/app/.output/public 
+      - ./denki-dist:/usr/src/app/export
             
   db:
     image: mysql:8.0
