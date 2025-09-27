@@ -59,6 +59,7 @@ CREATE TABLE `question_choices` (
   `question_id` int NOT NULL,
   `choice_index` int NOT NULL,
   `choice_text` varchar(255) NOT NULL,
+  `image_url` VARCHAR(255) NULL DEFAULT NULL COMMENT '選択肢用の画像URL',
   PRIMARY KEY (`id`),
   UNIQUE KEY `question_id` (`question_id`,`choice_index`),
   CONSTRAINT `question_choices_ibfk_1`
