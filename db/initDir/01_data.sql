@@ -19,6 +19,9 @@
 -- Dumping data for table `category_versions`
 --
 
+-- 対象DBを選択
+USE quiz_app;
+
 LOCK TABLES `category_versions` WRITE;
 /*!40000 ALTER TABLE `category_versions` DISABLE KEYS */;
 INSERT INTO `category_versions` VALUES ('basics','電気の基礎','2025-09-16','2025-09-17 07:37:04'),('inspection','検査方法','2025-09-16','2025-09-17 07:37:12'),('laws','法令','2025-09-16','2025-09-17 07:37:17'),('methods','施工方法の種類','2025-09-16','2025-09-17 07:37:30'),('symbols','図記号','2025-09-16','2025-09-17 07:37:38'),('tools','道具の名前','2025-09-16','2025-09-17 07:37:44'),('wiring','配線の基礎','2025-09-16','2025-09-17 07:37:57');
