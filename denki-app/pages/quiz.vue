@@ -12,15 +12,19 @@
       <p class="text-subtitle-1 font-weight-medium">
         {{ currentQuestion.question }}
       </p>
-      <v-img
-        v-if="currentQuestion.image_url"
-        :src="currentQuestion.image_url"
-        class="my-4"
-        max-width="400"
-      />
+
+      <!-- 複数画像対応 -->
+      <div v-if="currentQuestion.image_url" class="my-4">
+          <v-img
+            v-for="(img, idx) in (currentQuestion.image_url ? currentQuestion.image_url.split(',') : [])"
+            :key="idx"
+            :src="img.trim().startsWith('/denki/') ? img.trim() : '/denki' + img.trim()"
+            class="mb-4"
+            max-width="400"
+          />
+      </div>
     </div>
 
-    <div>currentquestion:{{ currentQuestion }}</div>
     <!-- 選択肢 -->
     <div class="mb-6">
       <v-btn
