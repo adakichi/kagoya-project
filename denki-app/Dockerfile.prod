@@ -9,6 +9,9 @@ COPY . .
 ARG API_BASE
 ENV API_BASE=$API_BASE
 ENV NODE_ENV=production
+# ここで確認用ログ
+RUN echo ">>> ARG API_BASE is '${API_BASE}'"
+RUN echo ">>> ENV API_BASE is $API_BASE"
 RUN npm run generate
 
 # 出力は /usr/src/app/dist にできる

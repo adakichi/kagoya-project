@@ -31,14 +31,26 @@
         v-for="choice in currentQuestion.choices"
         :key="choice.index"
         block
-        class="mb-2"
+        class="mb-2 choice-btn"
         :color="answered ? getChoiceColor(choice.index) : ''"
         :disabled="answered"
         @click="selectAnswer(choice.index)"
       >
-        {{ choice.text }}
+        <span class="choice-text">{{ choice.text }}</span>
       </v-btn>
     </div>
+
+    <!-- ソース情報 -->
+    <v-card class="pa-4 mb-6" outlined>
+      <p><strong>出典:</strong> {{ currentQuestion.source_type }}</p>
+      <p v-if="currentQuestion.source_detail">
+        <strong>詳細:</strong> {{ currentQuestion.source_detail }}
+      </p>
+      <p v-if="currentQuestion.source_note">
+        <strong>備考:</strong> {{ currentQuestion.source_note }}
+      </p>
+    </v-card>
+
 
     <!-- 解説 -->
     <v-alert
@@ -66,6 +78,16 @@
       @click="goToResult"
     >
       結果を見る
+    </v-btn>
+
+    <!-- やめるボタン -->
+    <v-btn
+      color="error"
+      variant="outlined"
+      class="mb-6"
+      @click="confirmQuit"
+    >
+      クイズをやめる
     </v-btn>
   </v-container>
 
@@ -224,5 +246,26 @@ function goToResult() {
   })
 }
 
+const { confirm } = useConfirm()
+// 辞めるボタン quiz-setupまで戻る
+async function confirmQuit() {
+  const yes = await confirm("クイズをやめますか？", "確認")
+  if (yes) router.push("/quiz-setup")
+}
+
 
 </script>
+
+<style scoped>
+.choice-btn {
+  white-space: normal;
+  text-align: left;
+  justify-content: flex-start;
+  padding: 12px;
+}
+
+.choice-text {
+  display: block;
+  word-break: break-word;
+}
+</style>

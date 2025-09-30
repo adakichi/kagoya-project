@@ -23,8 +23,18 @@ router.get('/questions', async (req, res) => {
 
     // 問題取得
     let sql = `
-      SELECT q.id, q.question, q.answer_index, q.explanation, q.category, q.image_url,
-             c.choice_index, c.choice_text
+      SELECT 
+        q.id, 
+        q.question, 
+        q.answer_index, 
+        q.explanation, 
+        q.category, 
+        q.image_url,
+        q.source_type,
+        q.source_detail,
+        q.source_note,
+        c.choice_index, 
+        c.choice_text
       FROM (
         SELECT * FROM questions
         ${category ? 'WHERE category = ?' : ''}
@@ -54,6 +64,9 @@ router.get('/questions', async (req, res) => {
           image_url: row.image_url,
           explanation: row.explanation,
           answer_index: row.answer_index,
+          source_type: row.source_type,
+          source_detail: row.source_detail,
+          source_note: row.source_note,
           choices: []
         };
       }

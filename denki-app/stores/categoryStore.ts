@@ -13,6 +13,11 @@ export const useCategoryStore = defineStore('category', {
   state: () => ({
     categories: [] as CategoryInfo[]
   }),
+  getters: {
+    getCategoryByKey: (state) => {
+      return (key: string) => state.categories.find(c => c.category === key)
+    }
+  },
   actions: {
     setCategories(cats: CategoryInfo[]) {
       this.categories = cats

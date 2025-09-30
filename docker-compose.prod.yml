@@ -20,8 +20,10 @@ services:
     build:
       context: ./denki-app
       dockerfile: Dockerfile.prod
+      args:
+        API_BASE: /api/denki
     command: >
-      sh -c "npm run generate && cp -r gen-dist/* export/"
+      sh -c "cp -r gen-dist/* export/"
     environment:
       - NODE_ENV=production
       - API_BASE=/api/denki

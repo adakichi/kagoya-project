@@ -7,15 +7,37 @@
       <v-card
         v-for="cat in categories"
         :key="cat.category"
-        class="cursor-pointer mb-4"
+        class="cursor-pointer"
         :color="selectedCategory === cat.value ? 'primary' : ''"
-        @click="selectCategory(cat.category)"
       >
         <v-card-text class="text-center">
-          {{ cat.title }}
+          <div class="text-h6 mb-2">{{ cat.title }}</div>
+          <div>
+            <span v-if="cat.status === 'not_downloaded'" class="text-red">(未ダウンロード)</span>
+            <span v-else-if="cat.status === 'outdated'" class="text-orange">(更新必要)</span>
+            <span v-else class="text-green">(最新)</span>
+          </div>
         </v-card-text>
+
+        <v-card-actions class="justify-center">
+          <v-btn
+            size="small"
+            color="secondary"
+            @click.stop="downloadCategory(cat.category)"
+          >
+            ダウンロード
+          </v-btn>
+          <v-btn
+            size="small"
+            color="primary"
+            @click.stop="selectCategory(cat.category)"
+          >
+            このカテゴリで開始
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </div>
+
 
     <!-- 出題数選択 -->
     <div class="mb-6">
@@ -95,6 +117,9 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useCategoryStore } from '~/stores/categoryStore'
+import { useLoader } from '~/composables/useLoader'
+const { start, finish } = useLoader()
+
 const categoryStore = useCategoryStore()
 // カテゴリ一覧
 const categories = computed(() => categoryStore.categories)
@@ -112,9 +137,17 @@ const selectedLimit = ref<number>(5)
 const showDialog = ref(false)
 const showErrorDialog = ref(false)
 
-function selectCategory(value: string) {
+
+// confirmModal
+const { confirm } = useConfirm()
+
+async function selectCategory(value: string) {
   selectedCategory.value = value
+  const cat = categoryStore.getCategoryByKey(value)
+  const yesno = await confirm(`${cat.title} Quizを始めますか？`, '確認')
+  if(yesno){startQuiz()}
 }
+
 
 function handleLimitClick(num: number) {
   if (isPremium || num === 5) {
@@ -153,7 +186,7 @@ async function checkAndDownloadCategory(category: string): Promise<boolean> {
       category: string
       version: string
       questions: any[]
-    }>(`/questions?category=${category}&limit=100`, {
+    }>(`/questions?category=${category}&limit=500`, {
       baseURL: config.public.apiBase
     })
 
@@ -177,6 +210,22 @@ async function checkAndDownloadCategory(category: string): Promise<boolean> {
 
     // ローカルにもデータが無ければ進めない
     return false
+  }
+}
+
+/** 手動でダウンロード */
+async function downloadCategory(category: string) {
+  try {
+    start()
+    const ok = await checkAndDownloadCategory(category)
+    if (ok) {
+      console.log(`${category} ダウンロード成功`)
+      // TODO: categoryStore のステータス更新
+    } else {
+      console.warn(`${category} のダウンロードに失敗しました`)
+    }
+  } finally {
+    finish()
   }
 }
 
@@ -211,7 +260,10 @@ function saveCategoryToDB(data: { category: string; version: string; questions: 
               answer_index: q.answer_index,
               explanation: q.explanation,
               category: q.category,
-              image_url: q.image_url
+              image_url: q.image_url,
+              source_type: q.source_type,
+              source_detail: q.source_detail,
+              source_node: q.source_note
             })
 
             q.choices.forEach((c: any) => {
@@ -219,7 +271,8 @@ function saveCategoryToDB(data: { category: string; version: string; questions: 
                 id: `${q.id}_${c.index}`,
                 question_id: q.id,
                 choice_index: c.index,
-                choice_text: c.text
+                choice_text: c.text,
+                image_url: c.image_url
               })
             })
           }
