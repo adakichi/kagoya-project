@@ -18,7 +18,7 @@ const port = 3000
 
 app.use(cors())
 app.use(express.json())
-app.use(expressLayouts)
+
 app.use(express.static('public'))
 
 // accesslog出力
@@ -26,6 +26,12 @@ app.use((req, res, next) => {
   console.log(`[ACCESS] ${req.method} ${req.originalUrl}`)
   next()
 })
+
+// EJS設定
+app.set('view engine', 'ejs')
+app.set('views', path.join(process.cwd(), 'views'))
+app.set('layout', 'layouts/main')
+app.use(expressLayouts)
 
 
 // Basic認証ミドルウェア
@@ -55,6 +61,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// layoutなどで使う変数を定義
+app.use((req, res, next) =>{
+    // ✅ 全ページ共通で利用する変数を初期化
+  res.locals.title = '';
+  res.locals.description = '';
+  res.locals.ogp = {};
+  res.locals.headExtra = '';
+  next();
+})
+
+
 // 通常(publicルート)
 app.use('/', publicRoutes)
 
@@ -66,15 +83,6 @@ app.use('/api/denki', denkiApi);
 
 // 管理ページルート
 app.use('/admin', basicAuth, adminRoutes)
-
-// 記事ページ
-import articlesRouter from './routes/articles.js'
-app.use('/articles', articlesRouter);
-
-// EJS設定
-app.set('view engine', 'ejs')
-app.set('views', path.join(process.cwd(), 'views'))
-app.set('layout', 'layouts/main')
 
 
 app.listen(port, host, () => {
