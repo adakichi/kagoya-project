@@ -15,6 +15,7 @@ services:
       - DB_PASS=mypassword
     depends_on:
       - db
+      - strapi
 
   frontend:
     build:
@@ -47,6 +48,23 @@ services:
       - ./db/initDir:/docker-entrypoint-initdb.d
     ports:
       - "3308:3306"
+
+  strapi:
+    build: ./strapi          # strapiディレクトリを使用
+    container_name: kagoya-strapi
+    working_dir: /app
+    restart: always
+    ports:
+      - "1337:1337"          # Strapiの管理画面用
+    env_file:
+      - ./strapi/.env.production   # Strapiの環境変数ファイル
+    environment:
+      - NODE_ENV=development       # 開発モード（メモリ軽めにしたい場合はproductionでもOK）
+    volumes:
+      - ./strapi:/app
+      - /app/node_modules          # node_modulesはホストとは分離
+    depends_on:
+      - db
 
   # nginx:
   #   image: nginx:alpine
