@@ -1,0 +1,365 @@
+/* 
+記事ページ用のCSS
+記事ページの基本構成
+    - Hero
+    - intro-summary
+    - toc(table of content)
+    - content
+
+    部品
+    note
+    ratio-box
+*/
+
+/* CSS リセット */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+/* === Hero === */
+    .hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 60px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: moveGrid 20s linear infinite;
+    }
+
+    .hero p {
+      font-size: 1.2em;
+      position: relative;
+      z-index: 1;
+      opacity: 0.95;
+    }
+
+/* === intro-summary === */
+.intro-summary {
+  background: #f7fafc; /* やわらかいグレー */
+  border-left: 5px solid #667eea; /* iDeCoテーマカラーのブルーライン */
+  border-radius: 12px;
+  padding: 30px 35px;
+  margin: 50px 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.intro-summary h2 {
+  font-size: 1.4em;
+  color: #667eea;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.intro-summary p {
+  color: #2d3748;
+  margin-bottom: 12px;
+  line-height: 1.8;
+}
+
+.intro-summary strong {
+  color: #2d3748;
+}
+
+/* === toc（Table of Contents）=== */
+.toc {
+  background: linear-gradient(135deg, #e0e7ff 0%, #f3f4ff 100%);
+  border-radius: 12px;
+  padding: 25px 30px;
+  margin: 40px 0 60px 0;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+}
+
+.toc h2 {
+  font-size: 1.3em;
+  color: #2d3748;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.toc ol {
+  list-style: decimal;
+  margin-left: 25px;
+  color: #4a5568;
+  line-height: 1.8;
+}
+
+.toc a {
+  color: #4a5568;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.toc a:hover {
+  color: #667eea;
+  margin-left: 3px;
+}
+
+/* === content === */
+    .content {
+      padding: 60px 40px;
+    }
+
+/*  */
+
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+      line-height: 1.8;
+      color: #2d3748;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+
+    @keyframes moveGrid {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    h1 {
+      font-size: 2.5em;
+      font-weight: 800;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+
+    h2 {
+      font-size: 2em;
+      color: #667eea;
+      margin: 50px 0 25px 0;
+      padding-bottom: 15px;
+      border-bottom: 3px solid #667eea;
+      font-weight: 700;
+    }
+
+    h3 {
+      font-size: 1.4em;
+      color: #764ba2;
+      margin: 35px 0 20px 0;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    h3::before {
+      content: '▸';
+      margin-right: 10px;
+      color: #667eea;
+    }
+
+    p {
+      margin-bottom: 20px;
+      color: #4a5568;
+    }
+
+    ul {
+      margin: 20px 0 20px 30px;
+    }
+
+    li {
+      margin-bottom: 12px;
+      color: #4a5568;
+      line-height: 1.7;
+    }
+
+    strong {
+      color: #2d3748;
+      font-weight: 600;
+    }
+
+    /* === note === */
+    .note {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-left: 5px solid #f59e0b;
+      padding: 25px;
+      margin: 30px 0;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.15);
+    }
+
+    .note p {
+      margin: 0;
+      color: #78350f;
+      font-size: 0.95em;
+    }
+
+
+    hr {
+      border: none;
+      height: 2px;
+      background: linear-gradient(to right, transparent, #667eea, transparent);
+      margin: 40px 0;
+    }
+
+    /* === tatio-box === */
+    .ratio-box {
+      background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%);
+      padding: 30px;
+      border-radius: 16px;
+      margin: 30px 0;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+    }
+
+    .ratio-box ul {
+      margin-left: 0;
+      list-style: none;
+    }
+
+    .ratio-box li {
+      padding: 12px 20px;
+      background: white;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+    }
+
+    .ratio-box li:hover {
+      transform: translateX(5px);
+    }
+
+    /* === grlossary === */
+    .glossary {
+      background: #f7fafc;
+      padding: 40px;
+      margin-top: 50px;
+      border-radius: 16px;
+    }
+
+    .glossary h1 {
+      color: #2d3748;
+      font-size: 2em;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .glossary-item {
+      background: white;
+      padding: 25px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      border-left: 4px solid #667eea;
+      transition: all 0.3s;
+    }
+
+    .glossary-item:hover {
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .glossary-item h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #667eea;
+    }
+
+    .glossary-item h3::before {
+      content: '📖';
+      margin-right: 10px;
+    }
+
+    /* === emoji-point === */
+    .emoji-point {
+      font-size: 1.1em;
+      color: #667eea;
+      font-weight: 600;
+      display: block;
+      margin: 20px 0;
+      padding: 15px 20px;
+      background: #e0e7ff;
+      border-radius: 8px;
+    }
+
+    /*  */
+
+    small {
+      color: #e7e7e7;
+      font-size: 0.9em;
+    }
+
+    small a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    small a:hover {
+      text-decoration: underline;
+    }
+
+    .indent {
+      margin-left: 30px;
+      font-size: 0.95em;
+    }
+
+
+/* === スマホ対応 === */
+@media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .hero {
+        padding: 40px 20px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      .content {
+        padding: 40px 20px;
+      }
+
+      h2 {
+        font-size: 1.6em;
+      }
+
+      .glossary {
+        padding: 20px;
+      }
+
+  .intro-summary, .toc {
+    padding: 20px;
+  }
+
+  .intro-summary h2,
+  .toc h2 {
+    font-size: 1.1em;
+  }
+
+  .toc ol {
+    margin-left: 15px;
+  }
+}

@@ -1,39 +1,190 @@
+/* ======== Reset / Layout ======== */
+
 body {
-    font-family: "Segoe UI", "Helvetica Neue", sans-serif;
-    margin: 0;
-    padding: 0;
+  font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.8;
+  background-color: var(--bg-color, #fff);
+  color: var(--text-color, #333);
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ======== Typography ======== */
+
+h1, h2, h3 {
+  font-weight: 700;
+  line-height: 1.4;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--heading-color, #222);
+}
+
+h1 {
+  font-size: 1.8rem;
+  border-left: 5px solid var(--accent-color, #ffd24d);
+  padding-left: 0.75rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+  border-left: 4px solid var(--accent-color, #ffc107);
+  padding-left: 0.5rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+  color: var(--subheading-color, #444);
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+ul {
+  margin: 0.5rem 0 1rem 1.5rem;
+  padding: 0;
+}
+
+li + li {
+  margin-top: 0.4rem;
+}
+
+strong {
+  color: var(--strong-color, #000);
+}
+
+small {
+  font-size: 0.9rem;
+  color: var(--muted-color, #666);
+}
+
+a {
+  color: var(--link-color, #007acc);
+  text-decoration: underline;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* ======== Components ======== */
+
+.note {
+  background: var(--note-bg, #fff8d0);
+  border-left: 4px solid var(--accent-color, #ffca28);
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+}
+
+.indent {
+  margin-left: 1.5rem;
+}
+
+/* ======== Table ======== */
+
+.table-container {
+  margin: 0 auto;
+  width: 90%;
+  max-width: 1200px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: var(--table-bg, #fff);
+  color: var(--text-color, #333);
+}
+
+th, td {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--table-border, #ccc);
+}
+
+th {
+  background-color: var(--th-bg, #eef);
+  color: var(--th-text, #223);
+}
+
+tr:nth-child(even) {
+  background-color: var(--table-stripe, #f9f9f9);
+}
+
+/* ========  ============================ */
+    section {
+      margin-bottom: 3em;
+    }
+    code {
+      background: #eee;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+    }
+
+/* ======== Navigation & Footer ======== */
+
+    nav {
+      background-color: #e0f2f1;
+      border-left: 5px solid #26a69a;
+      padding: 1em;
+      margin-bottom: 2em;
+    }
+    nav ul {
+      list-style: none;
+      padding-left: 1em;
+    }
+    nav li {
+      margin: 0.5em 0;
+    }
+
+
+nav a {
+  margin-right: 1rem;
+  text-decoration: none;
+  color: var(--link-color, #007acc);
+}
+
+footer {
+  text-align: center;
+  font-size: 0.9rem;
+  margin: 2rem 0;
+  color: var(--muted-color, #666);
+}
+
+/* ======== HR ======== */
+
+hr {
+  border: none;
+  border-top: 1px dashed var(--hr-color, #ccc);
+  margin: 2rem 0;
+}
+
+/* ======== Responsive ======== */
+
+@media (max-width: 600px) {
+  body {
+    font-size: 15px;
   }
-  
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
   main {
-    max-width: 960px;
-    margin: 0 auto;     /* ページ中央に配置 */
-    padding: 0 1.5rem;  /* 内側余白 */
+    padding: 0 1rem;
   }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-  }
-  
-  th, td {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ccc;
-  }
-  
-  nav a {
-    margin-right: 1rem;
-    text-decoration: none;
-  }
-  
-  footer {
-    text-align: center;
-    font-size: 0.9rem;
-    margin: 2rem 0;
-  }
-
-  .table-container {
-    margin: 0 auto;
-    width: 90%;
-    max-width: 1200px;
-  }
+}

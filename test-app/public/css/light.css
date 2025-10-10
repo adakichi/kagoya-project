@@ -1,18 +1,21 @@
-body {
-  background-color: #f7f9fb;
-  color: #333;
-}
+:root {
+  --bg-color: #f7f9fb;
+  --text-color: #333;
+  --heading-color: #222;
+  --subheading-color: #444;
+  --strong-color: #000;
+  --muted-color: #666;
 
-header {
-  background-color: #334;
-  color: #fff;
-}
+  --accent-color: #ffd24d;
 
-th {
-  background-color: #eef;
-  color: #223;
-}
+  --note-bg: #fff8d0;
 
-tr:nth-child(even) {
-  background-color: #f9f9f9;
+  --table-bg: #fff;
+  --table-border: #ccc;
+  --table-stripe: #f9f9f9;
+  --th-bg: #eef;
+  --th-text: #223;
+
+  --link-color: #007acc;
+  --hr-color: #ccc;
 }
