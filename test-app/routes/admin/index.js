@@ -10,9 +10,12 @@ router.use('/notify', notifyRoutes)
 router.use('/log', logRoutes)
 router.use('/ban', banRoutes)
 
+      
+
 const menus = [
-    {path:'log',name:'log確認',description:''},
-    {path:'ban',name:'ban 確認',description:''},
+    {path:'log',name:'🗂 IP単位/🌍 国別集計',description:''},
+    {path:'ban',name:'🚫 永久BAN一覧',description:''},
+    {path:'ban/nginx',name:'🌐 nginx BAN一覧',description:''},
     {path:'notify',name:'通知用',description:''},
     {path:'',name:'',description:''},
 ]
