@@ -31,6 +31,7 @@ Thumbs.db
 *.swp
 *.swo
 
+
 # ======================================
 # ⚙️ Strapi 固有の生成物
 # ======================================
@@ -52,7 +53,16 @@ imports/
 
 # バックアップやアップロード関連
 .backups/
-public/uploads/
+
+# === Strapi uploaded files ===
+# ローカルまたは永続ボリューム内に保存されるアップロードファイル
+strapi/public/uploads/*
+!strapi/public/uploads/
+!strapi/public/uploads/.gitkeep
+
+strapi/data/uploads/*
+!strapi/data/uploads/
+!strapi/data/uploads/.gitkeep
 
 # コンテナ・デプロイ関連
 docker-compose.override.yml

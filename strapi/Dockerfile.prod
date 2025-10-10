@@ -1,0 +1,18 @@
+FROM node:20-alpine AS build
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY . .
+RUN npm run build
+
+# git 管理から外れてるuploadsディレクトリを作成する（clone直後は無い可能性があるので）
+# Strapi本体ビルド後に追加
+RUN mkdir -p /app/public/uploads
+# 必要なら権限も調整
+RUN chown -R node:node /app/public/uploads
+
+EXPOSE 1337
+CMD ["npm", "start"]
+

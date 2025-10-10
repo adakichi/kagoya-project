@@ -90,8 +90,14 @@ Dockerfile.local
 
 # === Strapi uploaded files ===
 # ローカルまたは永続ボリューム内に保存されるアップロードファイル
-strapi/public/uploads/
-strapi/data/uploads/
+strapi/public/uploads/*
+!strapi/public/uploads/
+!strapi/public/uploads/.gitkeep
+
+strapi/data/uploads/*
+!strapi/data/uploads/
+!strapi/data/uploads/.gitkeep
+
 
 
 # ======================================
