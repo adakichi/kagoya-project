@@ -1,0 +1,36 @@
+
+<h1>
+  <% if (typeof category !== 'undefined' && category) { %>
+    カテゴリ: <%= category.toUpperCase() %>
+  <% } else { %>
+    記事一覧
+  <% } %>
+  </h1>
+
+  <% if (!articles.length) { %>
+    <p>記事がありません。</p>
+  <% } %>
+
+  <ul>
+    <% articles.forEach(a => { %>
+      <li>
+        <a href="/articles/<%= a.category?.slug %>/<%= a.slug %>">
+        <p><%= a.description %></p>
+
+        <% if (a.cover) { %>
+          <img 
+            src="http://localhost:1337<%= a.cover.formats?.small?.url || a.cover.url %>"
+            alt="<%= a.cover.alternativeText || a.title %>"
+            width="300"
+          >
+        <% } %>
+
+        <p>
+          カテゴリ: <%= a.category?.name || '未分類' %>　
+          著者: <%= a.author?.name || '不明' %>
+        </p>
+
+        <hr>
+      </li>
+    <% }) %>
+  </ul>

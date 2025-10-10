@@ -67,6 +67,10 @@ app.use('/api/denki', denkiApi);
 // 管理ページルート
 app.use('/admin', basicAuth, adminRoutes)
 
+// 記事ページ
+import articlesRouter from './routes/articles.js'
+app.use('/articles', articlesRouter);
+
 // EJS設定
 app.set('view engine', 'ejs')
 app.set('views', path.join(process.cwd(), 'views'))

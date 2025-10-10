@@ -1,0 +1,14 @@
+  <h1>カテゴリー 一覧</h1>
+
+  <% if (!categories.length) { %>
+    <p>記事がありません。</p>
+  <% } %>
+
+  <ul>
+    <% categories.forEach(c => { %>
+      <li>
+        <a href="/articles/<%= c?.slug %>"><%= c.name %></a>
+        <p><%= c.description %></p>
+      </li>
+    <% }) %>
+  </ul>

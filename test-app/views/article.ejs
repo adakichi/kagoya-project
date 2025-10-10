@@ -1,0 +1,19 @@
+<h1><%= article.title %></h1>
+<p><%= article.description %></p>
+
+<% if (article.cover) { %>
+  <img src="http://localhost:1337<%= article.cover.url %>" width="500">
+<% } %>
+
+<p>
+  カテゴリ: <%= article.category?.name %><br>
+  著者: <%= article.author?.name %>
+</p>
+
+<% article.blocks?.forEach(block => { %>
+  <% if (block.__component === 'shared.rich-text') { %>
+    <div><%- block.body.replace(/\n/g, '<br>') %></div>
+  <% } %>
+<% }) %>
+
+<p><a href="/articles/<%= article.category?.slug %>">← カテゴリに戻る</a></p>
