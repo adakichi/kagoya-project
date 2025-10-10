@@ -2,7 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title><%= title || 'Fail2Ban Viewer' %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title || 'O-ishisugihara.com' %></title>
   <link rel="stylesheet" href="/css/base.css">
   <!-- PWA関連 -->
   <link rel="manifest" href="/manifest.json">
@@ -10,18 +11,14 @@
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <meta name="theme-color" content="#317EFB">
 
+
   <% const themeFile = theme === 'dark' ? 'dark.css' : 'light.css'; %>
   <link rel="stylesheet" href="/css/<%= themeFile %>">
 </head>
 <body>
   <header>
-    <h1>Fail2Ban ログビューア</h1>
     <nav>
       <a href="/">🏠 トップ</a>
-      <a href="/log?theme=<%= theme %>">🗂 IP単位</a>
-      <a href="/log/country?theme=<%= theme %>">🌍 国別集計</a>
-      <a href="/ban?theme=<%= theme %>">🚫 永久BAN一覧</a>
-      <a href="/ban/nginx?theme=<%= theme %>">🌐 nginx BAN一覧</a>
       <a href="<%= toggleThemeUrl %>">
         <%= theme === 'light' ? '🌙 ダークモード' : '🌞 ライトモード' %>
       </a>
